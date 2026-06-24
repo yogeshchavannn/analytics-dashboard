@@ -156,56 +156,39 @@ document.getElementById("csvFile").addEventListener("change",
     });
 
 });
-    function calculateKPIs(data){
+  function calculateKPIs(data){
 
-    const avg = (arr)=>
-        arr.reduce((a,b)=>a+b,0)/arr.length;
+const average = (columnName) => {
 
-    const preGPA =
-        avg(
-            data.map(
-                x=>parseFloat(x.Pre_Semester_GPA)
-            )
-        );
+    const values = data
+    .map(row => parseFloat(row[columnName]))
+    .filter(value => !isNaN(value));
 
-    const postGPA =
-        avg(
-            data.map(
-                x=>parseFloat(x.Post_Semester_GPA)
-            )
-        );
+    if(values.length === 0) return 0;
 
-    const aiHours =
-        avg(
-            data.map(
-                x=>parseFloat(x.Weekly_GenAI_Hours)
-            )
-        );
+    return values.reduce(
+        (sum,value)=>sum+value,0
+    ) / values.length;
+};
 
-    const retention =
-        avg(
-            data.map(
-                x=>parseFloat(x.Skill_Retention_Score)
-            )
-        );
+document.getElementById("avgPreGPA")
+.innerText =
+average("Pre_Semester_GPA").toFixed(2);
 
-    document.getElementById("avgPreGPA")
-    .innerText =
-    preGPA.toFixed(2);
+document.getElementById("avgPostGPA")
+.innerText =
+average("Post_Semester_GPA").toFixed(2);
 
-    document.getElementById("avgPostGPA")
-    .innerText =
-    postGPA.toFixed(2);
+document.getElementById("avgAIHours")
+.innerText =
+average("Weekly_GenAI_Hours").toFixed(2);
 
-    document.getElementById("avgAIHours")
-    .innerText =
-    aiHours.toFixed(2);
-
-    document.getElementById("avgRetention")
-    .innerText =
-    retention.toFixed(2);
+document.getElementById("avgRetention")
+.innerText =
+average("Skill_Retention_Score").toFixed(2);
 
 }
+
 
 function renderTable(data){
 
