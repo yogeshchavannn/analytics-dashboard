@@ -81,7 +81,25 @@ th{
 
 <div class="card">
     <div class="stats">
-        <div class="stat-box">
+            <div class="stat-box">
+    <strong>Avg Pre GPA</strong>
+    <div id="avgPreGPA">-</div>
+</div>
+
+<div class="stat-box">
+    <strong>Avg Post GPA</strong>
+    <div id="avgPostGPA">-</div>
+</div>
+
+<div class="stat-box">
+    <strong>Avg AI Hours</strong>
+    <div id="avgAIHours">-</div>
+</div>
+
+<div class="stat-box">
+    <strong>Avg Skill Retention</strong>
+    <div id="avgRetention">-</div>
+</div>
             <strong>Dataset</strong>
             <div id="datasetName">-</div>
         </div>
@@ -108,16 +126,12 @@ th{
 
 <script>
 
-document
-.getElementById("csvFile")
-.addEventListener("change", function(event){
-
-    const file = event.target.files[0];
+document.getElementById("csvFile").addEventListener("change", 
+                                                    function(event){const file = event.target.files[0];
 
     if(!file) return;
 
-    document.getElementById("datasetName")
-    .innerText = file.name;
+    document.getElementById("datasetName").innerText = file.name;
 
     Papa.parse(file,{
 
@@ -127,9 +141,8 @@ document
 
             const data = results.data;
 
-            document
-            .getElementById("rowCount")
-            .innerText = data.length;
+            document.getElementById("rowCount").innerText = data.length;
+            calculateKPIs(data);
 
             document
             .getElementById("columnCount")
@@ -143,6 +156,56 @@ document
     });
 
 });
+    function calculateKPIs(data){
+
+    const avg = (arr)=>
+        arr.reduce((a,b)=>a+b,0)/arr.length;
+
+    const preGPA =
+        avg(
+            data.map(
+                x=>parseFloat(x.Pre_Semester_GPA)
+            )
+        );
+
+    const postGPA =
+        avg(
+            data.map(
+                x=>parseFloat(x.Post_Semester_GPA)
+            )
+        );
+
+    const aiHours =
+        avg(
+            data.map(
+                x=>parseFloat(x.Weekly_GenAI_Hours)
+            )
+        );
+
+    const retention =
+        avg(
+            data.map(
+                x=>parseFloat(x.Skill_Retention_Score)
+            )
+        );
+
+    document.getElementById("avgPreGPA")
+    .innerText =
+    preGPA.toFixed(2);
+
+    document.getElementById("avgPostGPA")
+    .innerText =
+    postGPA.toFixed(2);
+
+    document.getElementById("avgAIHours")
+    .innerText =
+    aiHours.toFixed(2);
+
+    document.getElementById("avgRetention")
+    .innerText =
+    retention.toFixed(2);
+
+}
 
 function renderTable(data){
 
